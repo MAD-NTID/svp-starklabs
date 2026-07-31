@@ -73,7 +73,7 @@ cards:
       - id: ai_api_ready
         description: "AI API is ready"
         type: ping
-        host: 192.168.2.147
+        host: 192.168.2.148
     statuses:
       all_complete: Online
       partial: "Partial Online"
