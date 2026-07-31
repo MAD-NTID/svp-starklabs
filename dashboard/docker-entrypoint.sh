@@ -12,7 +12,7 @@ python manage.py ensure_admin
 (
   while true; do
     python manage.py check_status
-    sleep 10
+    sleep 5
   done
 ) &
 
