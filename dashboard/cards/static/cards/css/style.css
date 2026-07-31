@@ -317,6 +317,13 @@ body {
     50% { opacity: 0.2; }
 }
 
+.intrusion-instruction {
+    background: rgba(0, 0, 0, 0.65);
+    border: 1px solid rgba(245, 166, 35, 0.35);
+    padding: 12px 24px;
+    border-radius: 8px;
+}
+
 .intrusion-instruction strong {
     animation: blink 1s step-end infinite;
 }

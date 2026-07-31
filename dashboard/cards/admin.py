@@ -1,7 +1,8 @@
 from django.contrib import admin
+from django.contrib import messages
+from django.contrib.admin import AdminSite
 from django.utils import timezone as tz
 from django.shortcuts import redirect
-from django.contrib import messages
 from .models import Card, CardStatus, CurrentStatus, GameSettings, TaskCheck, Team
 
 
@@ -52,6 +53,72 @@ def _reset_teams_to_default():
         Card.objects.filter(slug=slug).update(team=team)
 
 
+def _start_countdown(obj):
+    obj.start_time = tz.now()
+    obj.save()
+    return 'Countdown started.'
+
+
+def _reset_countdown(obj):
+    obj.start_time = None
+    obj.mission_accomplished = False
+    obj.intrusion_applied = False
+    obj.save()
+    _set_all_cards_operational()
+    return 'Countdown reset.'
+
+
+def _trigger_intrusion(obj):
+    obj.intrusion_time = tz.now()
+    obj.mission_accomplished = False
+    obj.intrusion_applied = True
+    obj.save()
+    _clear_all_overrides()
+    return 'Intrusion triggered now.'
+
+
+def _clear_intrusion(obj):
+    obj.intrusion_time = None
+    obj.mission_accomplished = False
+    obj.intrusion_applied = False
+    obj.save()
+    _set_all_cards_operational()
+    _reset_teams_to_default()
+    return 'Intrusion cleared and statuses/teams reset.'
+
+
+def _simulate_accomplished(obj):
+    obj.intrusion_time = tz.now()
+    obj.mission_accomplished = True
+    obj.intrusion_applied = True
+    obj.save()
+    _clear_all_overrides()
+    for card in Card.objects.all():
+        cs, _ = CurrentStatus.objects.get_or_create(card=card)
+        cs.tasks_completed = cs.tasks_total
+        if card.slug in STATUS_MAP:
+            real_status = CardStatus.objects.filter(card=card, name=STATUS_MAP[card.slug]).first()
+            if real_status:
+                cs.status = real_status
+        cs.save()
+    return 'Mission Accomplished simulated.'
+
+
+def _rotate_teams_now(obj):
+    _rotate_teams()
+    return 'Teams rotated clockwise.'
+
+
+ACTION_FUNCS = {
+    '_start_countdown': _start_countdown,
+    '_reset_countdown': _reset_countdown,
+    '_trigger_intrusion': _trigger_intrusion,
+    '_clear_intrusion': _clear_intrusion,
+    '_simulate_accomplished': _simulate_accomplished,
+    '_rotate_teams': _rotate_teams_now,
+}
+
+
 class CardAdmin(admin.ModelAdmin):
     list_display = ['title', 'slug', 'team', 'icon', 'order']
     prepopulated_fields = {'slug': ('title',)}
@@ -94,62 +161,31 @@ class GameSettingsAdmin(admin.ModelAdmin):
         return super().render_change_form(request, context, *args, **kwargs)
 
     def response_change(self, request, obj):
-        if '_start_countdown' in request.POST:
-            obj.start_time = tz.now()
-            obj.save()
-            self.message_user(request, 'Countdown started.', messages.SUCCESS)
-            return redirect(request.path)
-        if '_reset_countdown' in request.POST:
-            obj.start_time = None
-            obj.mission_accomplished = False
-            obj.intrusion_applied = False
-            obj.save()
-            _set_all_cards_operational()
-            self.message_user(request, 'Countdown reset.', messages.SUCCESS)
-            return redirect(request.path)
-        if '_trigger_intrusion' in request.POST:
-            obj.intrusion_time = tz.now()
-            obj.mission_accomplished = False
-            obj.intrusion_applied = True
-            obj.save()
-            _clear_all_overrides()
-            self.message_user(request, 'Intrusion triggered now.', messages.SUCCESS)
-            return redirect(request.path)
-        if '_clear_intrusion' in request.POST:
-            obj.intrusion_time = None
-            obj.mission_accomplished = False
-            obj.intrusion_applied = False
-            obj.save()
-            _set_all_cards_operational()
-            _reset_teams_to_default()
-            self.message_user(request, 'Intrusion cleared and statuses/teams reset.', messages.SUCCESS)
-            return redirect(request.path)
-        if '_simulate_accomplished' in request.POST:
-            obj.intrusion_time = tz.now()
-            obj.mission_accomplished = True
-            obj.intrusion_applied = True
-            obj.save()
-            _clear_all_overrides()
-            for card in Card.objects.all():
-                cs, _ = CurrentStatus.objects.get_or_create(card=card)
-                cs.tasks_completed = cs.tasks_total
-                if card.slug in STATUS_MAP:
-                    real_status = CardStatus.objects.filter(card=card, name=STATUS_MAP[card.slug]).first()
-                    if real_status:
-                        cs.status = real_status
-                cs.save()
-            self.message_user(request, 'Mission Accomplished simulated.', messages.SUCCESS)
-            return redirect(request.path)
-        if '_rotate_teams' in request.POST:
-            _rotate_teams()
-            self.message_user(request, 'Teams rotated clockwise.', messages.SUCCESS)
-            return redirect(request.path)
+        for key, func in ACTION_FUNCS.items():
+            if key in request.POST:
+                self.message_user(request, func(obj), messages.SUCCESS)
+                return redirect(request.path)
         return super().response_change(request, obj)
 
 
-admin.site.register(Card, CardAdmin)
-admin.site.register(Team)
-admin.site.register(CardStatus)
-admin.site.register(CurrentStatus, CurrentStatusAdmin)
-admin.site.register(GameSettings, GameSettingsAdmin)
-admin.site.register(TaskCheck)
+class StarkLabAdminSite(AdminSite):
+    index_template = 'admin/starklab_index.html'
+
+    def index(self, request, extra_context=None):
+        if request.method == 'POST':
+            obj = GameSettings.objects.first()
+            if obj:
+                for key, func in ACTION_FUNCS.items():
+                    if key in request.POST:
+                        messages.success(request, func(obj))
+                        return redirect('admin:index')
+        return super().index(request, extra_context)
+
+
+admin_site = StarkLabAdminSite(name='admin')
+admin_site.register(Card, CardAdmin)
+admin_site.register(Team)
+admin_site.register(CardStatus)
+admin_site.register(CurrentStatus, CurrentStatusAdmin)
+admin_site.register(GameSettings, GameSettingsAdmin)
+admin_site.register(TaskCheck)

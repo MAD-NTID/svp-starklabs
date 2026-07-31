@@ -1,0 +1,17 @@
+{% extends "admin/index.html" %}
+
+{% block content %}
+<div class="module" style="margin-bottom: 20px; padding: 15px;">
+  <h2 style="margin-top: 0;">Game Controls</h2>
+  <form method="post" action="{% url 'admin:index' %}">
+    {% csrf_token %}
+    <input type="submit" value="Start Countdown" name="_start_countdown" class="default" style="background: #28a745;">
+    <input type="submit" value="Reset Countdown" name="_reset_countdown" class="default" style="background: #dc3545;">
+    <input type="submit" value="Trigger Intrusion Now" name="_trigger_intrusion" class="default" style="background: #f5a623;">
+    <input type="submit" value="Clear Intrusion" name="_clear_intrusion" class="default" style="background: #6c757d;">
+    <input type="submit" value="Simulate Mission Accomplished" name="_simulate_accomplished" class="default" style="background: #28a745;">
+    <input type="submit" value="Rotate Teams Clockwise" name="_rotate_teams" class="default" style="background: #9C27B0;">
+  </form>
+</div>
+{{ block.super }}
+{% endblock %}
