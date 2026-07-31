@@ -1,0 +1,15 @@
+services:
+  dashboard:
+    container_name: dashboard
+    build:
+      context: .
+    image: escape-room-dashboard
+    ports:
+      - "80:8000"
+    volumes:
+      - dashboard-data:/app/data
+      - ./cards/tasks.yaml:/app/cards/tasks.yaml
+    restart: unless-stopped
+
+volumes:
+  dashboard-data:
