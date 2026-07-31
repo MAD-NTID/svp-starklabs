@@ -1,6 +1,6 @@
 cards:
   devices:
-    title: Devices
+    title: Hardware & IT
     icon: fa-microchip
     tasks:
       - id: printer_online
@@ -24,7 +24,7 @@ cards:
       none_complete: Offline
 
   networks:
-    title: Networks
+    title: Networking
     icon: fa-network-wired
     tasks:
       - id: router_reachable
@@ -40,7 +40,7 @@ cards:
       none_complete: Disrupted
 
   security:
-    title: Security
+    title: Cybersecurity
     icon: fa-shield-halved
     tasks:
       - id: firewall_active
@@ -73,7 +73,7 @@ cards:
       - id: ai_api_ready
         description: "AI API is ready"
         type: ping
-        host: 192.168.2.148
+        host: 192.168.2.147
     statuses:
       all_complete: Online
       partial: "Partial Online"

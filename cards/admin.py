@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils import timezone as tz
 from django.shortcuts import redirect
 from django.contrib import messages
-from .models import Card, CardStatus, CurrentStatus, GameSettings
+from .models import Card, CardStatus, CurrentStatus, GameSettings, Team
 
 
 STATUS_MAP = {
@@ -10,6 +10,13 @@ STATUS_MAP = {
     'networks': 'Connected',
     'security': 'Protected',
     'software_ai': 'Online',
+}
+
+DEFAULT_TEAM_ASSIGNMENT = {
+    'devices': 'Circuit',
+    'networks': 'Signal',
+    'security': 'Cipher',
+    'software_ai': 'Code',
 }
 
 
@@ -29,8 +36,24 @@ def _clear_all_overrides():
     CurrentStatus.objects.all().update(manual_override=False, tasks_completed=0)
 
 
+def _rotate_teams():
+    cards = list(Card.objects.filter(team__isnull=False).order_by('order'))
+    if len(cards) < 2:
+        return
+    teams = [c.team for c in cards]
+    for i, card in enumerate(cards):
+        card.team = teams[i - 1]
+        card.save(update_fields=['team'])
+
+
+def _reset_teams_to_default():
+    for slug, team_name in DEFAULT_TEAM_ASSIGNMENT.items():
+        team = Team.objects.filter(name=team_name).first()
+        Card.objects.filter(slug=slug).update(team=team)
+
+
 class CardAdmin(admin.ModelAdmin):
-    list_display = ['title', 'slug', 'icon', 'order']
+    list_display = ['title', 'slug', 'team', 'icon', 'order']
     prepopulated_fields = {'slug': ('title',)}
 
 
@@ -98,7 +121,8 @@ class GameSettingsAdmin(admin.ModelAdmin):
             obj.intrusion_applied = False
             obj.save()
             _set_all_cards_operational()
-            self.message_user(request, 'Intrusion cleared and statuses reset.', messages.SUCCESS)
+            _reset_teams_to_default()
+            self.message_user(request, 'Intrusion cleared and statuses/teams reset.', messages.SUCCESS)
             return redirect(request.path)
         if '_simulate_accomplished' in request.POST:
             obj.intrusion_time = tz.now()
@@ -116,10 +140,15 @@ class GameSettingsAdmin(admin.ModelAdmin):
                 cs.save()
             self.message_user(request, 'Mission Accomplished simulated.', messages.SUCCESS)
             return redirect(request.path)
+        if '_rotate_teams' in request.POST:
+            _rotate_teams()
+            self.message_user(request, 'Teams rotated clockwise.', messages.SUCCESS)
+            return redirect(request.path)
         return super().response_change(request, obj)
 
 
 admin.site.register(Card, CardAdmin)
+admin.site.register(Team)
 admin.site.register(CardStatus)
 admin.site.register(CurrentStatus, CurrentStatusAdmin)
 admin.site.register(GameSettings, GameSettingsAdmin)

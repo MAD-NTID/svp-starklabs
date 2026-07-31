@@ -172,9 +172,15 @@ function createCardHTML(card) {
                 </div>
             </div>
             <div class="small-box-footer">
-                <span id="tasks-${card.slug}">0/0 tasks</span>
-                <span id="override-${card.slug}" style="display:none;">
-                    <i class="fa-solid fa-lock" title="Manually overridden"></i>
+                <span class="team-label" id="team-${card.slug}">
+                    ${card.team_color ? '<i class="team-dot" style="background:' + card.team_color + '"></i>' : ''}
+                    ${card.team_name ? 'Team ' + card.team_name : 'Unassigned'}
+                </span>
+                <span class="footer-right">
+                    <span id="tasks-${card.slug}">0% resolved</span>
+                    <span id="override-${card.slug}" style="display:none;">
+                        <i class="fa-solid fa-lock" title="Manually overridden"></i>
+                    </span>
                 </span>
             </div>
         </div>
@@ -292,6 +298,13 @@ function renderCardState(card, isPreIntrusion) {
     var tasksEl = document.getElementById('tasks-' + card.slug);
     var overrideEl = document.getElementById('override-' + card.slug);
     var footerEl = tasksEl ? tasksEl.closest('.small-box-footer') : null;
+    var teamEl = document.getElementById('team-' + card.slug);
+
+    if (teamEl) {
+        teamEl.innerHTML = (card.team_color
+            ? '<i class="team-dot" style="background:' + card.team_color + '"></i>'
+            : '') + (card.team_name ? 'Team ' + card.team_name : 'Unassigned');
+    }
 
     var displayStatus = card.status;
     var displayCompleted = card.tasks_completed;
@@ -300,6 +313,13 @@ function renderCardState(card, isPreIntrusion) {
     if (isPreIntrusion) {
         displayStatus = GOOD_STATUS[card.slug] || 'Online';
         displayCompleted = displayTotal;
+    }
+
+    var pct;
+    if (isPreIntrusion) {
+        pct = 100;
+    } else {
+        pct = displayTotal > 0 ? Math.round((displayCompleted / displayTotal) * 100) : 0;
     }
 
     if (statusEl) {
@@ -312,7 +332,7 @@ function renderCardState(card, isPreIntrusion) {
             tasksEl.style.display = 'none';
         } else {
             tasksEl.style.display = 'inline';
-            tasksEl.textContent = displayCompleted + '/' + displayTotal + ' tasks';
+            tasksEl.textContent = pct + '% resolved';
         }
     }
     if (overrideEl) {
@@ -322,12 +342,6 @@ function renderCardState(card, isPreIntrusion) {
         footerEl.style.display = isPreIntrusion ? 'none' : '';
     }
 
-    var pct;
-    if (isPreIntrusion) {
-        pct = 100;
-    } else {
-        pct = displayTotal > 0 ? Math.round((displayCompleted / displayTotal) * 100) : 0;
-    }
     if (charts[card.slug]) {
         updateDonutChart(charts[card.slug], pct);
     }

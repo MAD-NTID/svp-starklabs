@@ -14,6 +14,8 @@ def dashboard(request):
             'title': c.title,
             'icon': c.icon,
             'order': c.order,
+            'team_name': c.team.name if c.team else '',
+            'team_color': c.team.color if c.team else '',
         } for c in cards]),
         'countdown_minutes': game_settings.countdown_minutes if game_settings else 60,
     })
@@ -28,6 +30,8 @@ def api_status(request):
             'slug': card.slug,
             'title': card.title,
             'icon': card.icon,
+            'team_name': card.team.name if card.team else '',
+            'team_color': card.team.color if card.team else '',
             'status': cs.status.name if cs and cs.status else 'Unknown',
             'tasks_completed': cs.tasks_completed if cs else 0,
             'tasks_total': cs.tasks_total if cs else 0,

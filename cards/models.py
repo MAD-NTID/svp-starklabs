@@ -1,10 +1,23 @@
 from django.db import models
 
+
+class Team(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    color = models.CharField(max_length=7)
+
+    class Meta:
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+
+
 class Card(models.Model):
     slug = models.SlugField(unique=True)
     title = models.CharField(max_length=100)
     icon = models.CharField(max_length=100)
     order = models.IntegerField(default=0)
+    team = models.ForeignKey(Team, on_delete=models.SET_NULL, null=True, blank=True, related_name='cards')
 
     class Meta:
         ordering = ['order']

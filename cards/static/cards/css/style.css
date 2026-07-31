@@ -27,6 +27,31 @@ body {
     padding: 8px 15px !important;
     font-size: 13px !important;
     text-align: center !important;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.team-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.team-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
+}
+
+.footer-right {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .donut-wrapper {
