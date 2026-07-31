@@ -8,7 +8,7 @@ import yaml
 from django.core.management.base import BaseCommand
 from django.utils import timezone as tz
 
-from cards.models import Card, CardStatus, CurrentStatus, GameSettings
+from cards.models import Card, CardStatus, CurrentStatus, GameSettings, TaskCheck
 
 TIMEOUT = 3
 
@@ -88,9 +88,21 @@ class Command(BaseCommand):
                 else:
                     result = check_ping(host)
 
+                TaskCheck.objects.update_or_create(
+                    card=card,
+                    task_id=task['id'],
+                    defaults={
+                        'title': task.get('title', task['id']),
+                        'host': host,
+                        'result': result,
+                    },
+                )
+
                 if result:
                     completed += 1
                 self.stdout.write(f"  {task['id']}: {host} -> {'OK' if result else 'FAIL'}")
+
+            TaskCheck.objects.filter(card=card).exclude(task_id__in=[t['id'] for t in tasks]).delete()
 
             current.tasks_total = num_tasks
             current.tasks_completed = completed

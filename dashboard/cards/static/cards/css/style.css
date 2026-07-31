@@ -11,6 +11,7 @@ body {
     transition: transform 0.2s, box-shadow 0.2s;
     overflow: hidden;
     position: relative;
+    cursor: pointer;
 }
 
 .small-box.bg-card:hover {
@@ -52,6 +53,43 @@ body {
     display: inline-flex;
     align-items: center;
     gap: 10px;
+}
+
+.task-result-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 4px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.task-result-row:last-child {
+    border-bottom: none;
+}
+
+.task-result-name {
+    font-size: 0.95rem;
+    color: #e0e0e0;
+}
+
+.task-result-badge {
+    padding: 2px 12px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.task-result-ok {
+    background: rgba(40, 167, 69, 0.2);
+    color: #28a745;
+    border: 1px solid #28a745;
+}
+
+.task-result-fail {
+    background: rgba(211, 47, 47, 0.2);
+    color: #D32F2F;
+    border: 1px solid #D32F2F;
 }
 
 .donut-wrapper {

@@ -37,6 +37,22 @@ class CardStatus(models.Model):
         return self.name
 
 
+class TaskCheck(models.Model):
+    card = models.ForeignKey(Card, on_delete=models.CASCADE, related_name='task_checks')
+    task_id = models.CharField(max_length=100)
+    title = models.CharField(max_length=200)
+    host = models.CharField(max_length=255)
+    result = models.BooleanField(default=False)
+    checked_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('card', 'task_id')
+        ordering = ['task_id']
+
+    def __str__(self):
+        return f"{self.card.title}: {self.title} -> {'OK' if self.result else 'FAIL'}"
+
+
 class CurrentStatus(models.Model):
     card = models.OneToOneField(Card, on_delete=models.CASCADE, related_name='current_status')
     status = models.ForeignKey(CardStatus, on_delete=models.PROTECT, null=True)

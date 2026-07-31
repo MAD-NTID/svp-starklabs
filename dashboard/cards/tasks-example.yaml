@@ -4,12 +4,12 @@ cards:
     icon: fa-microchip
     tasks:
       - id: printer_online
-        description: "Printer is online"
+        title: "Printer is online"
         type: port
         host: 192.168.2.13
         port: 9100
       - id: scanner_connected
-        description: "Scanner is connected"
+        title: "Scanner is connected"
         type: ping
         host: 192.168.1.101
     statuses:
@@ -22,11 +22,11 @@ cards:
     icon: fa-network-wired
     tasks:
       - id: router_reachable
-        description: "Router is reachable"
+        title: "Router is reachable"
         type: ping
         host: 192.168.1.1
       - id: switch_online
-        description: "Switch is online"
+        title: "Switch is online"
         type: ping
         host: 192.168.1.2
     statuses:
@@ -38,12 +38,12 @@ cards:
     icon: fa-shield-halved
     tasks:
       - id: firewall_active
-        description: "Firewall is active"
+        title: "Firewall is active"
         type: port
         host: 10.0.0.1
         port: 443
       - id: ids_operational
-        description: "IDS is operational"
+        title: "IDS is operational"
         type: port
         host: 10.0.0.2
         port: 22
@@ -56,17 +56,17 @@ cards:
     icon: fa-brain
     tasks:
       - id: web_server_up
-        description: "Web server is running"
+        title: "Web server is running"
         type: port
         host: 192.168.1.200
         port: 80
       - id: mysql_online
-        description: "MySQL is online"
+        title: "MySQL is online"
         type: port
         host: 192.168.1.201
         port: 3306
       - id: ai_api_ready
-        description: "AI API is ready"
+        title: "AI API is ready"
         type: ping
         host: 192.168.1.202
     statuses:

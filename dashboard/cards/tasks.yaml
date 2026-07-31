@@ -4,17 +4,17 @@ cards:
     icon: fa-microchip
     tasks:
       - id: printer_online
-        description: "Printer is online"
+        title: "Printer is online"
         type: port
         host: 192.168.2.13
         port: 9100
       - id: authentik_online
-        description: "Authentik is online"
+        title: "Authentik is online"
         type: port
         host: 192.168.2.115
         port: 9443
       - id: proxmox
-        description: "Proxmox is online"
+        title: "Proxmox is online"
         type: port
         host: 192.168.2.7
         port: 8006
@@ -28,11 +28,11 @@ cards:
     icon: fa-network-wired
     tasks:
       - id: router_reachable
-        description: "Router is reachable"
+        title: "Router is reachable"
         type: ping
         host: 192.168.1.1
       - id: switch_online
-        description: "Switch is online"
+        title: "Switch is online"
         type: ping
         host: 192.168.10.27
     statuses:
@@ -44,12 +44,12 @@ cards:
     icon: fa-shield-halved
     tasks:
       - id: firewall_active
-        description: "Firewall is active"
+        title: "Firewall is active"
         type: port
         host: 192.168.2.115
         port: 9443
       - id: ids_operational
-        description: "IDS is operational"
+        title: "IDS is operational"
         type: ping
         host: 192.168.2.109
     statuses:
@@ -61,17 +61,17 @@ cards:
     icon: fa-brain
     tasks:
       - id: pihole_server_up
-        description: "Pihole server is running"
+        title: "Pihole server is running"
         type: port
         host: 192.168.2.3
         port: 443
       - id: mysql_online
-        description: "MySQL is online"
+        title: "MySQL is online"
         type: port
         host: 192.168.2.110
         port: 3306
       - id: ai_api_ready
-        description: "AI API is ready"
+        title: "AI API is ready"
         type: ping
         host: 192.168.2.147
     statuses:

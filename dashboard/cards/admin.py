@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils import timezone as tz
 from django.shortcuts import redirect
 from django.contrib import messages
-from .models import Card, CardStatus, CurrentStatus, GameSettings, Team
+from .models import Card, CardStatus, CurrentStatus, GameSettings, TaskCheck, Team
 
 
 STATUS_MAP = {
@@ -152,3 +152,4 @@ admin.site.register(Team)
 admin.site.register(CardStatus)
 admin.site.register(CurrentStatus, CurrentStatusAdmin)
 admin.site.register(GameSettings, GameSettingsAdmin)
+admin.site.register(TaskCheck)

@@ -45,6 +45,7 @@ const GRAPH_CONFIGS = {
 };
 let graphs = {};
 let graphAlert = false;
+let cardData = {};
 
 function getStatusClass(status) {
     if (!status) return 'status-unknown';
@@ -155,7 +156,7 @@ function createCardHTML(card) {
         : '';
     return `
     <div class="col-md-6 col-12 mb-4">
-        <div class="small-box bg-card ${accentClass}">
+        <div class="small-box bg-card ${accentClass}" id="card-${card.slug}">
             <div class="inner">
                 <div class="d-flex align-items-center">
                     <div class="donut-wrapper">
@@ -357,6 +358,34 @@ function hideIntrusionOverlay() {
     if (overlay) overlay.style.display = 'none';
 }
 
+function openTaskModal(slug) {
+    var card = cardData[slug];
+    if (!card) return;
+    var titleEl = document.getElementById('task-modal-title');
+    if (titleEl) titleEl.textContent = card.title + ' — System Status';
+    var list = document.getElementById('task-results-list');
+    if (!list) return;
+    list.innerHTML = '';
+    var tasks = card.tasks || [];
+    if (!tasks.length) {
+        list.innerHTML = '<p class="text-secondary mb-0">No task data yet.</p>';
+    } else {
+        tasks.forEach(function (t) {
+            var row = document.createElement('div');
+            row.className = 'task-result-row';
+            row.innerHTML = '<span class="task-result-name"></span>' +
+                '<span class="task-result-badge ' + (t.result ? 'task-result-ok' : 'task-result-fail') + '">' + (t.result ? 'OK' : 'FAIL') + '</span>';
+            row.firstElementChild.textContent = t.title;
+            list.appendChild(row);
+        });
+    }
+    var modalEl = document.getElementById('taskModal');
+    if (modalEl) {
+        var modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+        modal.show();
+    }
+}
+
 function fetchStatus() {
     fetch('/api/status/')
         .then(function (r) { return r.json(); })
@@ -366,7 +395,9 @@ function fetchStatus() {
 
             setGraphMode(data.intrusion_active);
 
+            cardData = {};
             data.cards.forEach(function (card) {
+                cardData[card.slug] = card;
                 renderCardState(card, isPreIntrusion);
             });
 
@@ -490,6 +521,13 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('intrusionDismissBtn').addEventListener('click', function () {
         intrusionDismissed = true;
         hideIntrusionOverlay();
+    });
+
+    container.addEventListener('click', function (e) {
+        var cardEl = e.target.closest('.small-box');
+        if (!cardEl) return;
+        var slug = cardEl.id.replace('card-', '');
+        openTaskModal(slug);
     });
 
     fetchStatus();

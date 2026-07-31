@@ -1,8 +1,9 @@
 import json
+from collections import defaultdict
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.utils import timezone as tz
-from .models import Card, CardStatus, CurrentStatus, GameSettings
+from .models import Card, CardStatus, CurrentStatus, GameSettings, TaskCheck
 
 
 def dashboard(request):
@@ -22,8 +23,13 @@ def dashboard(request):
 
 
 def api_status(request):
-    cards = Card.objects.all().order_by('order')
+    cards = list(Card.objects.all().order_by('order'))
     data = []
+
+    checks_by_card = defaultdict(list)
+    for tc in TaskCheck.objects.filter(card__in=cards).order_by('card_id', 'task_id'):
+        checks_by_card[tc.card_id].append({'title': tc.title, 'result': tc.result})
+
     for card in cards:
         cs = CurrentStatus.objects.filter(card=card).select_related('status').first()
         data.append({
@@ -37,6 +43,7 @@ def api_status(request):
             'tasks_total': cs.tasks_total if cs else 0,
             'manual_override': cs.manual_override if cs else False,
             'last_updated': cs.updated_at.isoformat() if cs and cs.updated_at else None,
+            'tasks': checks_by_card.get(card.id, []),
         })
 
     game_settings = GameSettings.objects.first()

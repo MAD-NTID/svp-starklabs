@@ -68,6 +68,21 @@
       <p class="text-warning mt-3 fs-5 fw-bold">Students return to room 2335!</p>
     </div>
 
+    <div class="modal fade" id="taskModal" tabindex="-1" data-bs-backdrop="static">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="background: #1a1a2e; border: 2px solid #444;">
+          <div class="modal-header border-secondary">
+            <h5 class="modal-title text-light" id="task-modal-title">System Status</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body" id="task-results-list"></div>
+          <div class="modal-footer justify-content-center border-secondary">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="container-fluid py-4">
         <div class="row" id="cards-container" data-cards='{{ cards_json|safe }}'></div>
         <div class="last-updated">
