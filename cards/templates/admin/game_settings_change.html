@@ -1,0 +1,16 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_urls %}
+{% block submit_buttons_bottom %}
+  <div class="submit-row">
+    <input type="submit" value="{% trans 'Start Countdown' %}" name="_start_countdown" class="default" style="background: #28a745;">
+    <input type="submit" value="{% trans 'Reset Countdown' %}" name="_reset_countdown" class="default" style="background: #dc3545;">
+  </div>
+  <div class="submit-row">
+    <input type="submit" value="{% trans 'Trigger Intrusion Now' %}" name="_trigger_intrusion" class="default" style="background: #f5a623;">
+    <input type="submit" value="{% trans 'Clear Intrusion' %}" name="_clear_intrusion" class="default" style="background: #6c757d;">
+  </div>
+  <div class="submit-row">
+    <input type="submit" value="{% trans 'Simulate Mission Accomplished' %}" name="_simulate_accomplished" class="default" style="background: #28a745;">
+  </div>
+  {{ block.super }}
+{% endblock %}
