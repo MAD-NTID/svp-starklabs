@@ -31,10 +31,19 @@ cards:
         title: "Router is reachable"
         type: ping
         host: 192.168.1.1
-      - id: switch_online
-        title: "Switch is online"
+      - id: bad_cable
+        title: "Replace bad cable"
         type: ping
-        host: 192.168.10.27
+        host: 10.1.20.140
+      - id: laptop_bad_ip
+        title: "Laptop has a valid IP"
+        type: ping
+        host: 10.1.20.138
+      - id: printer_is_online
+        title: "Printer is online"
+        type: port
+        host: 10.1.20.143
+        port: 9100
     statuses:
       all_complete: Connected
       none_complete: Disrupted
