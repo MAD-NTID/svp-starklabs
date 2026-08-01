@@ -8,7 +8,7 @@ mkdir -p /app/data
 python manage.py migrate
 python manage.py ensure_admin
 
-# Run check_status every 10 seconds in background
+# Run check_status every 5 seconds in background
 (
   while true; do
     python manage.py check_status

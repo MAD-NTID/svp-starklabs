@@ -6,6 +6,8 @@ services:
     image: escape-room-dashboard
     ports:
       - "80:8000"
+    environment:
+      - ESCAPE_ROOM_API_KEY=starklab-api-key-2026
     volumes:
       - dashboard-data:/app/data
       - ./cards/tasks.yaml:/app/cards/tasks.yaml

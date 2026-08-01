@@ -1,34 +1,13 @@
-import sys
-import socket
-import subprocess
-
 from django.core.management.base import BaseCommand
 
 from cards.models import Card, CurrentStatus, GameSettings, TaskCheck
-from cards.status_utils import load_yaml, sync_manual_task_rows, update_card_progress
-
-TIMEOUT = 3
-
-
-def check_ping(host):
-    try:
-        if sys.platform == "win32":
-            cmd = ["ping", "-n", "1", "-w", str(TIMEOUT * 1000), host]
-        else:
-            cmd = ["ping", "-c", "1", "-W", str(TIMEOUT), host]
-        result = subprocess.run(cmd, capture_output=True, timeout=TIMEOUT + 2)
-        return result.returncode == 0
-    except (subprocess.TimeoutExpired, OSError):
-        return False
-
-
-def check_port(host, port):
-    try:
-        sock = socket.create_connection((host, port), timeout=TIMEOUT)
-        sock.close()
-        return True
-    except (socket.timeout, ConnectionRefusedError, OSError):
-        return False
+from cards.status_utils import (
+    check_ping,
+    check_port,
+    load_yaml,
+    sync_manual_task_rows,
+    update_card_progress,
+)
 
 
 class Command(BaseCommand):

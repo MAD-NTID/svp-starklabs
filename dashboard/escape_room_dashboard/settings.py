@@ -28,6 +28,8 @@ DEBUG = not os.environ.get('DOCKER')
 
 ALLOWED_HOSTS = ['*'] if os.environ.get('DOCKER') else []
 
+TASK_API_KEY = os.environ.get('ESCAPE_ROOM_API_KEY', 'starklab-dev-key')
+
 
 # Application definition
 

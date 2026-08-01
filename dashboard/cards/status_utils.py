@@ -1,3 +1,6 @@
+import socket
+import subprocess
+import sys
 from pathlib import Path
 
 import yaml
@@ -6,6 +9,29 @@ from django.utils import timezone as tz
 from cards.models import CardStatus, CurrentStatus, TaskCheck
 
 YAML_PATH = Path(__file__).resolve().parent / 'tasks.yaml'
+
+TIMEOUT = 3
+
+
+def check_ping(host):
+    try:
+        if sys.platform == "win32":
+            cmd = ["ping", "-n", "1", "-w", str(TIMEOUT * 1000), host]
+        else:
+            cmd = ["ping", "-c", "1", "-W", str(TIMEOUT), host]
+        result = subprocess.run(cmd, capture_output=True, timeout=TIMEOUT + 2)
+        return result.returncode == 0
+    except (subprocess.TimeoutExpired, OSError):
+        return False
+
+
+def check_port(host, port):
+    try:
+        sock = socket.create_connection((host, port), timeout=TIMEOUT)
+        sock.close()
+        return True
+    except (socket.timeout, ConnectionRefusedError, OSError):
+        return False
 
 
 def load_yaml():
