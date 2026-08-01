@@ -43,6 +43,8 @@ class TaskCheck(models.Model):
     title = models.CharField(max_length=200)
     host = models.CharField(max_length=255)
     result = models.BooleanField(default=False)
+    is_manual = models.BooleanField(default=False)
+    manual_complete = models.BooleanField(default=False)
     checked_at = models.DateTimeField(auto_now=True)
 
     class Meta:
@@ -50,7 +52,16 @@ class TaskCheck(models.Model):
         ordering = ['task_id']
 
     def __str__(self):
+        if self.is_manual:
+            return f"{self.card.title}: {self.title} -> {'OK' if self.manual_complete else 'FAIL'} (manual)"
         return f"{self.card.title}: {self.title} -> {'OK' if self.result else 'FAIL'}"
+
+
+class ManualTaskCheck(TaskCheck):
+    class Meta:
+        proxy = True
+        verbose_name = 'Manual Task'
+        verbose_name_plural = 'Manual Tasks'
 
 
 class CurrentStatus(models.Model):

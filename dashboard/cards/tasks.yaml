@@ -18,6 +18,9 @@ cards:
         type: port
         host: 192.168.2.7
         port: 8006
+      - id: ram_replaced
+        title: "Replace bad RAM"
+        type: manual
     statuses:
       all_complete: Operational
       partial: "Partial Online"
@@ -31,6 +34,10 @@ cards:
         title: "Router is reachable"
         type: ping
         host: 192.168.1.1
+      - id: switch_online
+        title: "Switch is online"
+        type: ping
+        host: 192.168.10.27
       - id: bad_cable
         title: "Replace bad cable"
         type: ping

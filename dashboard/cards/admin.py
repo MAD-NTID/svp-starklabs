@@ -3,7 +3,8 @@ from django.contrib import messages
 from django.contrib.admin import AdminSite
 from django.utils import timezone as tz
 from django.shortcuts import redirect
-from .models import Card, CardStatus, CurrentStatus, GameSettings, TaskCheck, Team
+from .models import Card, CardStatus, CurrentStatus, GameSettings, ManualTaskCheck, TaskCheck, Team
+from .status_utils import update_card_progress
 
 
 STATUS_MAP = {
@@ -53,6 +54,10 @@ def _reset_teams_to_default():
         Card.objects.filter(slug=slug).update(team=team)
 
 
+def _reset_manual_completions():
+    TaskCheck.objects.filter(is_manual=True).update(manual_complete=False)
+
+
 def _start_countdown(obj):
     obj.start_time = tz.now()
     obj.save()
@@ -65,6 +70,7 @@ def _reset_countdown(obj):
     obj.intrusion_applied = False
     obj.save()
     _set_all_cards_operational()
+    _reset_manual_completions()
     return 'Countdown reset.'
 
 
@@ -83,6 +89,7 @@ def _clear_intrusion(obj):
     obj.intrusion_applied = False
     obj.save()
     _set_all_cards_operational()
+    _reset_manual_completions()
     _reset_teams_to_default()
     return 'Intrusion cleared and statuses/teams reset.'
 
@@ -182,10 +189,43 @@ class StarkLabAdminSite(AdminSite):
         return super().index(request, extra_context)
 
 
+class TaskCheckAdmin(admin.ModelAdmin):
+    list_display = ['card', 'task_id', 'title', 'result', 'is_manual', 'manual_complete', 'checked_at']
+    list_filter = ['card', 'is_manual']
+    readonly_fields = ['card', 'task_id', 'title', 'host', 'result', 'is_manual', 'manual_complete', 'checked_at']
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+class ManualTaskCheckAdmin(admin.ModelAdmin):
+    list_display = ['card', 'title', 'manual_complete', 'checked_at']
+    list_editable = ['manual_complete']
+    list_display_links = ['title']
+    list_filter = ['card']
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).filter(is_manual=True)
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        update_card_progress(obj.card)
+
+
 admin_site = StarkLabAdminSite(name='admin')
 admin_site.register(Card, CardAdmin)
 admin_site.register(Team)
 admin_site.register(CardStatus)
 admin_site.register(CurrentStatus, CurrentStatusAdmin)
 admin_site.register(GameSettings, GameSettingsAdmin)
-admin_site.register(TaskCheck)
+admin_site.register(TaskCheck, TaskCheckAdmin)
+admin_site.register(ManualTaskCheck, ManualTaskCheckAdmin)

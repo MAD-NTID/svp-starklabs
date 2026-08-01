@@ -28,7 +28,10 @@ def api_status(request):
 
     checks_by_card = defaultdict(list)
     for tc in TaskCheck.objects.filter(card__in=cards).order_by('card_id', 'task_id'):
-        checks_by_card[tc.card_id].append({'title': tc.title, 'result': tc.result})
+        checks_by_card[tc.card_id].append({
+            'title': tc.title,
+            'result': tc.manual_complete if tc.is_manual else tc.result,
+        })
 
     for card in cards:
         cs = CurrentStatus.objects.filter(card=card).select_related('status').first()
