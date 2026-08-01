@@ -4,13 +4,14 @@ import sys
 from pathlib import Path
 
 import yaml
+from django.conf import settings
 from django.utils import timezone as tz
 
 from cards.models import CardStatus, CurrentStatus, TaskCheck
 
 YAML_PATH = Path(__file__).resolve().parent / 'tasks.yaml'
 
-TIMEOUT = 3
+TIMEOUT = settings.CHECK_TIMEOUT
 
 
 def check_ping(host):

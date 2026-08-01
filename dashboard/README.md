@@ -85,6 +85,8 @@ cards:
   ```yaml
   countdown_minutes: 45
   ```
+- `CHECK_TIMEOUT` (seconds, default `1`) — network check timeout (env var). Raise it if
+  hosts are slow to respond; lower it for faster check cycles.
 
 ---
 

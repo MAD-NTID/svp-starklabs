@@ -1,4 +1,5 @@
 from django.core.management.base import BaseCommand
+from django.utils import timezone as tz
 
 from cards.models import Card, CurrentStatus, GameSettings, TaskCheck
 from cards.status_utils import (
@@ -8,6 +9,10 @@ from cards.status_utils import (
     sync_manual_task_rows,
     update_card_progress,
 )
+
+
+def _ts():
+    return tz.localtime().strftime('%Y-%m-%d %H:%M:%S')
 
 
 class Command(BaseCommand):
@@ -43,7 +48,7 @@ class Command(BaseCommand):
                 current = CurrentStatus(card=card)
 
             if current.manual_override or (current.status and current.status.name == 'Maintenance'):
-                self.stdout.write(f"  Skipping {slug} (manual override or maintenance)")
+                self.stdout.write(f"[{_ts()}]  Skipping {slug} (manual override or maintenance)")
                 sync_manual_task_rows(card, tasks)
                 continue
 
@@ -61,7 +66,7 @@ class Command(BaseCommand):
                             'result': False,
                         },
                     )
-                    self.stdout.write(f"  {task['id']}: manual (instructor check)")
+                    self.stdout.write(f"[{_ts()}]  {task['id']}: manual (instructor check)")
                     continue
 
                 host = task.get('host', '')
@@ -81,9 +86,9 @@ class Command(BaseCommand):
                         'result': result,
                     },
                 )
-                self.stdout.write(f"  {task['id']}: {host} -> {'OK' if result else 'FAIL'}")
+                self.stdout.write(f"[{_ts()}]  {task['id']}: {host} -> {'OK' if result else 'FAIL'}")
 
             completed, _, status_name = update_card_progress(card, config)
-            self.stdout.write(f" {slug}: {status_name} ({completed}/{num_tasks})")
+            self.stdout.write(f"[{_ts()}] {slug}: {status_name} ({completed}/{num_tasks})")
 
-        self.stdout.write(self.style.SUCCESS('Status check complete'))
+        self.stdout.write(f"[{_ts()}] {self.style.SUCCESS('Status check complete')}")
