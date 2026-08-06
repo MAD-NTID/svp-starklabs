@@ -1,23 +1,30 @@
 # Database Engineer
 
-The attacker destroyed the database server RAM as well as
-deleted the database.
+# StoryLine
+
+As a result of Dr. Doom's attack across starLab infrastructures, you decided to do an full investigatiion on the database server to ensure that it is still functional.
+
 
 # Investigation
-- Discovered that the database is not online
-    - Ping the database server and it is not responding
-- Coordingate with the Zoom person with Team circuit to find out why the database is offline
+- Perform a ping check to confirm that the database server is online
+- If you are not able to ping the server, the database is offline.
+- Contact the Team Circuit on zoom to find out why the database server is offline and what is the plan to fix it.
+- Document the findings and prepare a report for the next team to review.
 
 # Restore
-- Wait for the Team Circuit to replace the database server RAM and reboot the server
+- Review the report from the previous team and get a general understanding of what the issue is.
+- Wait for the Team Circuit to replace the database server burned RAM and reboot the server
 - Once the database server is back online:
     - Create a new database `Name TBD`
     - Import the SQL file `database_backup.sql` into the new database
     - Done
+- Document the changes made and prepare a report for the next team to review.
 
 # Test
- - Verify that the database is online
- - Verify that the database `name exist` and the tables are present
+- Review the report from the previous team and get a general understanding of what the issue is.
+- It is now time to verify that the database is online and functional.
+    - Verify that the database is online
+    - Verify that the database `name exist` and the tables are present
 
 # Secure Hands off
 - Create a documentation on what to do if the situation happens again

@@ -13,6 +13,12 @@ embedder = SentenceTransformer(EMBEDDER_MODEL_NAME)
 client = chromadb.PersistentClient(path=DATABASE_PATH)
 collection = client.get_collection(COLLECTION_NAME)
 
+"""
+This is the instruction to JARVIS.
+It tells JARVIS how it should what it should do
+and how it should answer user questions using
+the knowledges from the documents.
+"""
 SYSTEM_PROMPT = """
 You are JARVIS.
 
@@ -34,8 +40,8 @@ def retrieve_relevant_documents(question, max_k=3):
 
     #show the retrieved documents
     print(f"Retrieved {len(docs)} relevant documents:")
-    for i, doc in enumerate(docs):
-        print(f"Document {i+1}: {doc[:50]}...")
+    # for i, doc in enumerate(docs):
+    #     print(f"Document {i+1}: {doc[:50]}...")
 
     return docs 
 
@@ -70,11 +76,12 @@ def ask(question, max_k=3):
                 "role": "user",
                 "content": prompt
             }
-        ]
+        ],
+        stream = True
     )
 
-    # return the response from the LLM
-    return response["message"]["content"]
+    for chunk in response:
+        yield chunk["message"]["content"]
 
 
 #setting up a test

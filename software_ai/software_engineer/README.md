@@ -27,12 +27,13 @@ Username: intern01
 Password: Stark2026!
 ```
 
-# Mission
+# Investigation
  - Attempt to login to the intern portal using the test account credentials and observe the error message.
  - Review the two versions of the software side by side to identify what might be broken
  - Document the finding.
 
 # Restore
+- Review the finding from the previous team and get a general understanding of what the issue is.
 - Fix the broken code and save it.
 - Create a documenation of what was fixed.
 - Update the software version to v10.8.8
