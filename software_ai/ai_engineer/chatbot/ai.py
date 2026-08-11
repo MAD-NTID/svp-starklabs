@@ -55,9 +55,6 @@ def ask(question, max_k=3):
 
     # build the prompt for the LLM
     prompt = f"""
-        {SYSTEM_PROMPT}
-
-
         Knowledge:
 
         {context}
@@ -72,6 +69,10 @@ def ask(question, max_k=3):
     response = ollama.chat(
         model=OLLAMA_MODEL_NAME,
         messages=[
+            {
+                "role": "system",
+                "content": SYSTEM_PROMPT
+            },
             {
                 "role": "user",
                 "content": prompt
