@@ -41,6 +41,21 @@ def login():
         username = request.form['username']
         password = request.form['password']
 
+        #we will leave this in to skip the database check, this is easy for testing and debugging
+        #if this match the testing login info we skip the database
+        if username =="admin" and password =="adminTesting1234":
+            session['user'] = {"username": username}
+            return redirect('/dashboard')
+
+        #check the database to see if the username and password are correct
+        user = database.get_user(username, password)
+
+        # if the user is found then we store the user session and send them to the dashboard page
+        if user:
+            #store the session for the user so we can keep them logged in
+            session['user'] = user # remove this as part of student exercise
+            #send to the dashboard page
+            return redirect('/dashboard')
 
         #user is not found
         error = database.get_last_error() or "Invalid username or password"

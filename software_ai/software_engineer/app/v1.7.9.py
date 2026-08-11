@@ -41,6 +41,15 @@ def login():
         username = request.form['username']
         password = request.form['password']
 
+        #check the database to see if the username and password are correct
+        user = database.get_user(username, password)
+
+        # if the user is found then we store the user session and send them to the dashboard page
+        if user:
+            #store the session for the user so we can keep them logged in
+            session['user'] = user # remove this as part of student exercise
+            #send to the dashboard page
+            return redirect('/dashboard')
 
         #user is not found
         error = database.get_last_error() or "Invalid username or password"

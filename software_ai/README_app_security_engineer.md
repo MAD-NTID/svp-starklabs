@@ -23,10 +23,7 @@ Security Operations Center (SOC)
 An unauthorized user successfully accessed the intern portal using credentials that were not assigned to any active user account.
 
 **Affected Version:**  
-v10.8.7
-
-**Last Known Secure Version:**  
-v10.8.6
+v1.8.0
 
 ---
 
