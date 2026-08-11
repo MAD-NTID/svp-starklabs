@@ -1,6 +1,7 @@
 import os
 import chromadb
 from sentence_transformers import SentenceTransformer
+import shutil
 
 #set the path of the knowledges directory
 KNOWLEDGE_DIR = os.path.join(os.path.dirname(__file__), "knowledges")
@@ -11,6 +12,11 @@ KNOWLEDGE_BASE_COLLECTION_NAME = "jarvis"
 
 #initalize the embedding model
 embedder = SentenceTransformer(EMBEDDER_MODEL_NAME)
+
+#delete the existing database if it exists
+if os.path.exists(DATABASE_PATH):
+    print(f"Deleting existing database at {DATABASE_PATH}")
+    shutil.rmtree(DATABASE_PATH)
 
 #initalize the ChromaDB client
 client = chromadb.PersistentClient(path=DATABASE_PATH)
