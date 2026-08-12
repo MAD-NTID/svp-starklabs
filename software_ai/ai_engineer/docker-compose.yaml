@@ -1,0 +1,23 @@
+
+services:
+  ollama:
+    image: ollama/ollama
+    container_name: ollama_svp
+    ports:
+      - "11434:11434"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+    volumes:
+      - ollama:/root/.ollama
+    restart: unless-stopped
+    entrypoint: ["/bin/sh", "-c"]
+    command: >
+      "ollama serve & 
+      until ollama list >/dev/null 2>&1; do sleep 1; done; 
+      ollama pull qwen3:8b;
+      wait"
+volumes:
+  ollama:
