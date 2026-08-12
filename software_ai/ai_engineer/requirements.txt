@@ -2,3 +2,4 @@ ollama
 chromadb
 sentence-transformers
 flask
+torch

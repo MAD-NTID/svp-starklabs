@@ -24,28 +24,29 @@ def home():
 
 @app.route('/api/database/ping', methods=['GET'])
 def get_database_ping_status():
-    port = 33306 
+    port = 3306 
     headers = {
         'Authorization': f'Token {API_KEY}',
         'Content-Type': 'application/json'
     }
-
-    # try:
-    #     response = requests.post(API_ENDPOINT, headers=headers, timeout=5)
-    #     if response.status_code == 200:
-    #         return True
-    #     else:
-    #         return False
-    # except requests.RequestException as e:
-    #     print(f"Error occurred while pinging the database: {e}")
-    #     return False
-
-    return {
-        "ok": True,
-        "port": port,
-        "reachable": True,
-        "response_time_ms":42
+    body = {
+        "host": os.getenv('DB_HOST'),
+        "port": port
     }
+
+    try:
+        response = requests.post(API_ENDPOINT+"/check/", headers=headers, timeout=5, json=body)
+        return response.json()
+    except requests.RequestException as e:
+        print(f"Error occurred while pinging the database: {e}")
+        return {"error":e}
+
+    # return {
+    #     "ok": True,
+    #     "port": port,
+    #     "reachable": True,
+    #     "response_time_ms":42
+    # }
 
 @app.route('/api/database/exists', methods=['GET'])
 def get_database_exists_status():

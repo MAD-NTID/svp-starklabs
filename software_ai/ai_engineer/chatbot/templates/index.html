@@ -186,7 +186,7 @@
 
                 <strong>Model:</strong>
 
-                <span>
+                <span class="model-info">
                     llama3.2
                 </span>
 
@@ -354,6 +354,13 @@ async function loadSystemPrompt(){
 
 }
 
+async function getModelInfo(){
+    const response = await fetch("/model");
+    const data = await response.json();
+
+    document.querySelector(".model-info").textContent = data.model;
+}
+
 //load knowledge sources
 async function loadKnowledgeSources(){
     const response = await fetch("/load_knowledege_sources");
@@ -371,6 +378,8 @@ async function loadKnowledgeSources(){
 loadKnowledgeSources();
 
 loadSystemPrompt();
+
+getModelInfo();
 
 
 
