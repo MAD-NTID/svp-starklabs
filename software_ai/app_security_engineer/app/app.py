@@ -104,7 +104,7 @@ def is_login_restored_status():
     }
     body = {
         "card": "software_ai",
-        "task": "restore_login",
+        "task": "secure_login_access",
         "complete": is_restored
     }
 
