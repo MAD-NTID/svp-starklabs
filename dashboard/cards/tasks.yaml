@@ -87,6 +87,9 @@ cards:
             - id: restore_ai
               title: 'Restore AI'
               type: manual
+            - id: secure_login_access
+              title: 'Secure Login Access'
+              type: manual
         statuses:
             all_complete: Online
             partial: 'Partial Online'
