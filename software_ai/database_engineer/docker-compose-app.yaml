@@ -3,7 +3,7 @@ services:
     build: ./app
     #restart: unless-stopped
     environment:
-      - DB_HOST=129.21.220.95
+      - DB_HOST=10.1.10.243
       - DB_USER=root
       - DB_PASSWORD=topSecretPassword#1!
       - DB_NAME=jarvis_knowledge_matrix
@@ -11,4 +11,4 @@ services:
       - API_ENDPOINT=http://10.1.40.143/api
       - API_KEY=starklab-api-key-2026
     ports:
-      - 8080:5000
+      - 80:5000

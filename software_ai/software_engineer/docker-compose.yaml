@@ -23,7 +23,7 @@ services:
             - API_KEY=starklab-api-key-2026
             - API_ENDPOINT=http://10.1.40.143/api
         ports:
-            - 8000:5000
+            - 80:5000
         depends_on:
             - db
 
