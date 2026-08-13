@@ -1,5 +1,6 @@
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, render_template, request, redirect, session, jsonify
 from database import Database
+from security_check import update_dashboard, check_security_policies
 import os
 
 app = Flask(__name__)
@@ -77,6 +78,27 @@ def logout():
     #remove the user session so they are logged out
     session.pop('user', None)
     return redirect('/login')
+
+@app.route('/api/check_security')
+def check_task():
+    is_restored = check_security_policies()
+
+    if session.get("security_status") == is_restored:
+        return jsonify({
+            "cached": True,
+            "security_status": session.get("security_status"),
+            "message": "State unchanged. Skipped external task update API call.",
+            "is_restored": is_restored,
+        }), 200
+    else:
+        session["security_status"] = is_restored
+        update_dashboard("restore_login", is_restored)
+        return jsonify({
+            "cached": False,
+            "security_status": is_restored,
+            "message": "State changed. Updated external task status.",
+            "is_restored": is_restored,
+        }), 200
     
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
