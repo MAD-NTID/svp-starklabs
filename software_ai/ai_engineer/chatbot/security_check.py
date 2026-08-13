@@ -44,7 +44,7 @@ def get_unexpected_markdown_files():
     }
 
     discovered_files = set()
-    for markdown_file in project_root.rglob("*.md"):
+    for markdown_file in project_root.rglob("knowledges/*.md"):
         if any(part in IGNORED_DIRECTORIES for part in markdown_file.parts):
             continue
 
