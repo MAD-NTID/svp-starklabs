@@ -21,7 +21,7 @@ services:
             - DB_NAME=starklab_portal
             - FLASK_SECRET_KEY=reactorArchIsLife
             # - API_KEY=http://<ip>/api
-            - API_ENDPOINT=http://192.168.5.181/api
+            - API_ENDPOINT=http://10.1.40.143/api
             - API_KEY=starklab-api-key-2026
         ports:
             - 8000:5000
