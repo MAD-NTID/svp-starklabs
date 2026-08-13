@@ -80,12 +80,15 @@ cards:
               title: 'Restore Database'
               type: manual
             - id: restore_login
-              title: 'Restore Login'
+              title: 'Restore SSO Login'
               type: manual
               host: 192.168.2.110
               port: 3306
-            - id: restore_ai
-              title: 'Restore AI'
+            - id: remove_corrupted_files
+              title: 'Remove Corrupted Files'
+              type: manual
+            - id: lockdown_secrets
+              title: 'Lockdown Secrets'
               type: manual
             - id: secure_login_access
               title: 'Secure Login Access'
