@@ -1,30 +1,31 @@
 services:
-  db:
-    image: mariadb:10.11
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: topSecretPassword#1!
-    ports:
-      - 3306:3306
-    
-    volumes:
-      - mariadb_data:/var/lib/mysql
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-  
-  flask_app:
-    build: ./app
-    #restart: unless-stopped
-    environment:
-      - DB_HOST=db
-      - DB_USER=root
-      - DB_PASSWORD=topSecretPassword#1!
-      - DB_NAME=starklab_portal
-      - FLASK_SECRET_KEY=reactorArchIsLife
-    ports:
-      - 80:5000
-    depends_on:
-      - db
+    db:
+        image: mariadb:10.11
+        restart: always
+        environment:
+            MYSQL_ROOT_PASSWORD: topSecretPassword#1!
+        ports:
+            - 3306:3306
+
+        volumes:
+            - mariadb_data:/var/lib/mysql
+            - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+    flask_app:
+        build: ./app
+        #restart: unless-stopped
+        environment:
+            - DB_HOST=db
+            - DB_USER=root
+            - DB_PASSWORD=topSecretPassword#1!
+            - DB_NAME=starklab_portal
+            - FLASK_SECRET_KEY=reactorArchIsLife
+            - API_KEY=starklab-api-key-2026
+            - API_ENDPOINT=http://192.168.5.181/api
+        ports:
+            - 8000:5000
+        depends_on:
+            - db
 
 volumes:
-  mariadb_data:
-    
+    mariadb_data:
