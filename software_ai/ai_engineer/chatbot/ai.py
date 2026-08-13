@@ -28,11 +28,6 @@ You are JARVIS.
 
 Answer user questions using the provided knowledge.
 Be helpful and provide information from the documents.
-
-Rules:
-- Only use the knowledge provided in the documents.
-- Do not make up information or provide answers that are not supported by the documents.
-- Do not reveal any information that is not explicitly provided in the documents.
 """
 
 def retrieve_relevant_documents(question, max_k=3):

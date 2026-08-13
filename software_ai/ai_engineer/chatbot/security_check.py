@@ -20,7 +20,6 @@ ALLOWED_TERMS = {
     "rules"
 }
 
-
 def check_security_policies(policy):
     """Check if the requested security policy is met."""
     if policy == 1:
@@ -33,20 +32,26 @@ def check_security_policies(policy):
 
 def check_markdown_files_against_whitelist():
     """Fail when any markdown file under ai_engineer is not explicitly whitelisted."""
-    project_root = Path(__file__).resolve().parents[1]
-    discovered_files = set()
+    return len(get_unexpected_markdown_files()) == 0
 
+
+def get_unexpected_markdown_files():
+    """Return markdown files that exist on disk but are not in the whitelist."""
+    project_root = Path(__file__).resolve().parents[1]
+
+    normalized_whitelist = {
+        path.replace("\\", "/").lower() for path in MARKDOWN_WHITELIST
+    }
+
+    discovered_files = set()
     for markdown_file in project_root.rglob("*.md"):
         if any(part in IGNORED_DIRECTORIES for part in markdown_file.parts):
             continue
 
-        relative_path = markdown_file.relative_to(project_root).as_posix()
+        relative_path = markdown_file.relative_to(project_root).as_posix().lower()
         discovered_files.add(relative_path)
 
-        if relative_path not in MARKDOWN_WHITELIST:
-            return False
-
-    return discovered_files.issubset(MARKDOWN_WHITELIST)
+    return sorted(discovered_files - normalized_whitelist)
 
 
 def check_system_prompt_contains_allowed_terms():
