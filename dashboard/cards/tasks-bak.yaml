@@ -1,0 +1,97 @@
+cards:
+  devices:
+    title: Hardware & IT
+    icon: fa-microchip
+    tasks:
+      - id: restore_printer
+        title: "Restore Printer Service"
+        type: port
+        host: 10.1.10.170
+        port: 9100
+      - id: replace_ram
+        title: "Replace RAM"
+        type: manual
+      - id: replace_SSD
+        title: "Replace SSD"
+        type: manual
+      - id: restore_server
+        title: "Restore Server"
+        type: port
+        host: 10.1.10.243
+        port: 3306
+    statuses:
+      all_complete: Operational
+      partial: "Partial Online"
+      none_complete: Offline
+
+  networks:
+    title: Networking
+    icon: fa-network-wired
+    tasks:
+      - id: router_reachable
+        title: "Router is reachable"
+        type: ping
+        host: 192.168.1.1
+      - id: switch_online
+        title: "Switch is online"
+        type: ping
+        host: 192.168.10.27
+      - id: bad_cable
+        title: "Replace bad cable"
+        type: ping
+        host: 10.1.20.140
+      - id: laptop_bad_ip
+        title: "Laptop has a valid IP"
+        type: ping
+        host: 10.1.20.138
+      - id: printer_is_online
+        title: "Printer is online"
+        type: port
+        host: 10.1.20.143
+        port: 9100
+    statuses:
+      all_complete: Connected
+      none_complete: Disrupted
+
+  security:
+    title: Cybersecurity
+    icon: fa-shield-halved
+    tasks:
+      - id: firewall_active
+        title: "Firewall is active"
+        type: port
+        host: 192.168.2.115
+        port: 9443
+      - id: ids_operational
+        title: "IDS is operational"
+        type: ping
+        host: 192.168.2.109
+    statuses:
+      all_complete: Protected
+      none_complete: Compromised
+
+    software_ai:
+        title: Software & AI
+        icon: fa-brain
+        tasks:
+            - id: restore_db
+              title: 'Restore Database'
+              type: manual
+            - id: restore_login
+              title: 'Restore SSO Login'
+              type: manual
+              host: 192.168.2.110
+              port: 3306
+            - id: remove_corrupted_files
+              title: 'Remove Corrupted Files'
+              type: manual
+            - id: lockdown_secrets
+              title: 'Lockdown Secrets'
+              type: manual
+            - id: secure_login_access
+              title: 'Secure Login Access'
+              type: manual
+    statuses:
+      all_complete: Online
+      partial: "Partial Online"
+      none_complete: Malfunctioning
